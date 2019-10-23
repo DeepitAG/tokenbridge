@@ -11,4 +11,4 @@
   publish = "ui/build"
 
   # Default build command.
-  command = "yarn initialize && cd ui && npm run build"
+  command = "yarn initialize && cd ui && yarn build"
