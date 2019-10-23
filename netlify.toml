@@ -11,4 +11,4 @@
   publish = "ui/build"
 
   # Default build command.
-  command = "yarn install"
+  command = "npm run build"
