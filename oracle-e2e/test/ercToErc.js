@@ -40,7 +40,7 @@ describe('erc to erc', () => {
 
     // call bridge method to transfer tokens to a different recipient
     await foreignBridge.methods
-      .relayTokens(secondUser.address, firstTransferValue)
+      .join(secondUser.address, firstTransferValue)
       .send({
         from: user.address,
         gas: '1000000'
@@ -60,33 +60,6 @@ describe('erc to erc', () => {
       assert(toBN(balance).isZero(), 'User balance should be the same')
       if (toBN(recipientBalance).isZero()) {
         retry()
-      }
-    })
-
-    const secondTransferValue = homeWeb3.utils.toWei('0.05')
-
-    // send tokens to foreign bridge
-    await erc20Token.methods
-      .transfer(COMMON_FOREIGN_BRIDGE_ADDRESS, secondTransferValue)
-      .send({
-        from: user.address,
-        gas: '1000000'
-      })
-      .catch(e => {
-        console.error(e)
-      })
-
-    // Send a trivial transaction to generate a new block since the watcher
-    // is configured to wait 1 confirmation block
-    await generateNewBlock(foreignWeb3, user.address)
-
-    // check that balance increases
-    await promiseRetry(async retry => {
-      const balance = await erc677Token.methods.balanceOf(user.address).call()
-      if (toBN(balance).isZero()) {
-        retry()
-      } else {
-        assert(toBN(balance).eq(toBN(secondTransferValue)), 'User balance should be increased only by second transfer')
       }
     })
   })

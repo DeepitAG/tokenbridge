@@ -20,7 +20,6 @@ const config = require(path.join('../config/', process.argv[2]))
 const processSignatureRequests = require('./events/processSignatureRequests')(config)
 const processCollectedSignatures = require('./events/processCollectedSignatures')(config)
 const processAffirmationRequests = require('./events/processAffirmationRequests')(config)
-const processTransfers = require('./events/processTransfers')(config)
 const processAMBSignatureRequests = require('./events/processAMBSignatureRequests')(config)
 const processAMBCollectedSignatures = require('./events/processAMBCollectedSignatures')(config)
 const processAMBAffirmationRequests = require('./events/processAMBAffirmationRequests')(config)
@@ -100,8 +99,6 @@ function processEvents(events) {
     case 'erc-erc-affirmation-request':
       return processAffirmationRequests(events)
     case 'erc-erc-transfer':
-    case 'erc-native-transfer':
-      return processTransfers(events)
     case 'amb-signature-request':
       return processAMBSignatureRequests(events)
     case 'amb-collected-signatures':
