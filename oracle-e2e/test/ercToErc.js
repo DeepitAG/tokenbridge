@@ -29,7 +29,7 @@ describe('erc to erc', () => {
 
     // approve tokens to foreign bridge
     await erc20Token.methods
-      .approve(COMMON_FOREIGN_BRIDGE_ADDRESS, firstTransferValue)
+      .approve(foreignBridge.options.address, firstTransferValue)
       .send({
         from: user.address,
         gas: '1000000'
@@ -52,6 +52,7 @@ describe('erc to erc', () => {
     // Send a trivial transaction to generate a new block since the watcher
     // is configured to wait 1 confirmation block
     await generateNewBlock(foreignWeb3, user.address)
+    await generateNewBlock(homeWeb3, user.address)
 
     // check that balance increases
     await promiseRetry(async retry => {
@@ -63,18 +64,18 @@ describe('erc to erc', () => {
       }
     })
   })
-  it('should convert tokens in home to tokens in foreign', async () => {
+  /*it('should convert tokens in home to tokens in foreign', async () => {
     const originalBalance = await erc20Token.methods.balanceOf(user.address).call()
 
     // check that account has tokens in home chain
-    const balance = await erc677Token.methods.balanceOf(user.address).call()
+    const balance = await erc677Token.methods.balanceOf(secondUser.address).call()
     assert(!toBN(balance).isZero(), 'Account should have tokens')
 
     // send transaction to home bridge
     const depositTx = await erc677Token.methods
       .transferAndCall(COMMON_HOME_BRIDGE_ADDRESS, homeWeb3.utils.toWei('0.01'), '0x')
       .send({
-        from: user.address,
+        from: secondUser.address,
         gas: '1000000'
       })
       .catch(e => {
@@ -83,8 +84,8 @@ describe('erc to erc', () => {
 
     // Send a trivial transaction to generate a new block since the watcher
     // is configured to wait 1 confirmation block
+    await generateNewBlock(foreignWeb3, user.address)
     await generateNewBlock(homeWeb3, user.address)
-
     // The bridge should create a new transaction with a CollectedSignatures
     // event so we generate another trivial transaction
     await promiseRetry(
@@ -110,5 +111,5 @@ describe('erc to erc', () => {
         retry()
       }
     })
-  })
+  }) This test is not feasible in the context of ErcToNative */
 })

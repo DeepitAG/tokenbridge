@@ -1,4 +1,0 @@
-[submodule "contracts"]
-	path = contracts
-	url = https://github.com/Giulio2002/tokenbridge-contracts
-	branch = master
