@@ -15,6 +15,7 @@ types.forEach(type => {
 
       before(async () => {
         ;({ data } = await axios.get(`${type.baseUrl}`))
+        console.log(data)
       })
 
       describe('home', async () => {

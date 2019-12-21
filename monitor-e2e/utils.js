@@ -26,11 +26,27 @@ const sendEther = async (rpcUrl, account, to) => {
   })
 }
 
+const join = async (rpcUrl, account, tokenAddress, bridgeAddress) => {
+  const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl))
+  web3.eth.accounts.wallet.add(account.privateKey)
+  const erc20Token = new web3.eth.Contract(ERC677_BRIDGE_TOKEN_ABI, tokenAddress)
+  const bridge = new web3.eth.Contract(FOREIGN_NATIVE_TO_ERC_ABI, bridgeAddress)
+
+  await erc20Token.methods.approve(bridgeAddress, web3.utils.toWei('0.01')).send({
+    from: account.address,
+    gas: '1000000'
+  })
+
+  await bridge.methods.join(account.address, web3.utils.toWei('0.01')).send({
+    from: account.address,
+    gas: '1000000'
+  })
+}
+
 const sendTokens = async (rpcUrl, account, tokenAddress, recipientAddress) => {
   const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl))
   web3.eth.accounts.wallet.add(account.privateKey)
   const erc20Token = new web3.eth.Contract(ERC677_BRIDGE_TOKEN_ABI, tokenAddress)
-
   await erc20Token.methods.transfer(recipientAddress, web3.utils.toWei('0.01')).send({
     from: account.address,
     gas: '1000000'
@@ -63,6 +79,7 @@ const addValidator = async (rpcUrl, account, bridgeAddress) => {
 module.exports = {
   waitUntil,
   sendEther,
+  join,
   sendTokens,
   addValidator,
   sendAMBMessage

@@ -53,7 +53,8 @@ const asyncForEach = async (array, callback) => {
 async function main(bridgeMode) {
   const { HOME_ABI, FOREIGN_ABI } = getBridgeABIs(bridgeMode)
   const homeBridge = new web3Home.eth.Contract(HOME_ABI, COMMON_HOME_BRIDGE_ADDRESS)
-  const foreignBridge = new web3Foreign.eth.Contract(FOREIGN_ABI, COMMON_FOREIGN_BRIDGE_ADDRESS)
+  const foreignBridgeAddress = COMMON_FOREIGN_BRIDGE_ADDRESS
+  const foreignBridge = new web3Foreign.eth.Contract(FOREIGN_ABI, foreignBridgeAddress)
   const homeValidatorsAddress = await homeBridge.methods.validatorContract().call()
   const homeBridgeValidators = new web3Home.eth.Contract(BRIDGE_VALIDATORS_ABI, homeValidatorsAddress)
 

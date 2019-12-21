@@ -80,11 +80,12 @@ async function main(bridgeMode) {
       lastChecked: Math.floor(Date.now() / 1000)
     }
   } else if (bridgeMode === BRIDGE_MODES.ERC_TO_NATIVE) {
-    const foreignBridge = new web3Foreign.eth.Contract(FOREIGN_ERC_TO_NATIVE_ABI, COMMON_FOREIGN_BRIDGE_ADDRESS)
+    const bridgeAddressForeign = COMMON_FOREIGN_BRIDGE_ADDRESS
+    const foreignBridge = new web3Foreign.eth.Contract(FOREIGN_ERC_TO_NATIVE_ABI, bridgeAddressForeign)
     const erc20Address = await foreignBridge.methods.erc20token().call()
     const erc20Contract = new web3Foreign.eth.Contract(ERC20_ABI, erc20Address)
     logger.debug('calling erc20Contract.methods.balanceOf')
-    const foreignErc20Balance = await erc20Contract.methods.balanceOf(COMMON_FOREIGN_BRIDGE_ADDRESS).call()
+    const foreignErc20Balance = await erc20Contract.methods.balanceOf(bridgeAddressForeign).call()
 
     const homeBridge = new web3Home.eth.Contract(HOME_ERC_TO_NATIVE_ABI, COMMON_HOME_BRIDGE_ADDRESS)
     logger.debug('calling homeBridge.methods.blockRewardContract')

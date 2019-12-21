@@ -17,7 +17,7 @@ async function readFile(path) {
   } catch (e) {
     console.error(e)
     return {
-      error: 'please check your worker'
+      error: e.message
     }
   }
 }

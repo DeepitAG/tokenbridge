@@ -37,4 +37,5 @@ async function checkWorker() {
     logger.error(e)
   }
 }
+
 checkWorker()

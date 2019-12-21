@@ -37,8 +37,10 @@ async function main(mode) {
   const homeErcBridge = new web3Home.eth.Contract(HOME_ERC_TO_ERC_ABI, COMMON_HOME_BRIDGE_ADDRESS)
   const bridgeMode = mode || (await getBridgeMode(homeErcBridge))
   const { HOME_ABI, FOREIGN_ABI } = getBridgeABIs(bridgeMode)
+  console.log(mode)
+  const foreignBridgeAddress = COMMON_FOREIGN_BRIDGE_ADDRESS
   const homeBridge = new web3Home.eth.Contract(HOME_ABI, COMMON_HOME_BRIDGE_ADDRESS)
-  const foreignBridge = new web3Foreign.eth.Contract(FOREIGN_ABI, COMMON_FOREIGN_BRIDGE_ADDRESS)
+  const foreignBridge = new web3Foreign.eth.Contract(FOREIGN_ABI, foreignBridgeAddress)
   const v1Bridge = bridgeMode === BRIDGE_MODES.NATIVE_TO_ERC_V1
   let isExternalErc20
   let erc20Contract
@@ -48,7 +50,7 @@ async function main(mode) {
     const erc20Address = await foreignBridge.methods[erc20MethodName]().call()
     const tokenType = await getTokenType(
       new web3Foreign.eth.Contract(ERC677_BRIDGE_TOKEN_ABI, erc20Address),
-      COMMON_FOREIGN_BRIDGE_ADDRESS
+      foreignBridgeAddress
     )
     isExternalErc20 = tokenType === ERC_TYPES.ERC20
     erc20Contract = new web3Foreign.eth.Contract(ERC20_ABI, erc20Address)
@@ -93,7 +95,7 @@ async function main(mode) {
       fromBlock: MONITOR_FOREIGN_START_BLOCK,
       toBlock: foreignBlockNumber,
       options: {
-        filter: { to: COMMON_FOREIGN_BRIDGE_ADDRESS }
+        filter: { to: foreignBridgeAddress }
       }
     })).map(normalizeEvent)
 
@@ -107,7 +109,7 @@ async function main(mode) {
       })
 
       // Get token swap events emitted by foreign bridge
-      const bridgeTokensSwappedEvents = tokensSwappedEvents.filter(e => e.address === COMMON_FOREIGN_BRIDGE_ADDRESS)
+      const bridgeTokensSwappedEvents = tokensSwappedEvents.filter(e => e.address === foreignBridgeAddress)
 
       // Get transfer events for each previous erc20
       const uniqueTokenAddresses = [...new Set(bridgeTokensSwappedEvents.map(e => e.returnValues.from))]
@@ -120,7 +122,7 @@ async function main(mode) {
             fromBlock: MONITOR_FOREIGN_START_BLOCK,
             toBlock: foreignBlockNumber,
             options: {
-              filter: { to: COMMON_FOREIGN_BRIDGE_ADDRESS }
+              filter: { to: foreignBridgeAddress }
             }
           })).map(normalizeEvent)
           transferEvents = [...previousTransferEvents, ...transferEvents]
