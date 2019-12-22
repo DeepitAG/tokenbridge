@@ -33,8 +33,8 @@
     "contracts"
   ],
   "scripts": {
-    "initialize": "yarn clean",
-    "build": "yarn install --unsafe-perm --frozen-lockfile && yarn install:deploy && yarn compile:contracts && yarn workspace ui run build",
+    "initialize": "yarn clean && yarn install --unsafe-perm --frozen-lockfile && yarn post && yarn install:deploy && yarn compile:contracts",
+    "build": "yarn initialize && yarn workspace ui run build",
     "lint": "yarn wsrun --exclude token-bridge-contracts lint",
     "test": "yarn wsrun --exclude oracle-e2e --exclude ui-e2e --exclude monitor-e2e test",
     "oracle-e2e": "./oracle-e2e/run-tests.sh",
@@ -42,7 +42,7 @@
     "clean": "rm -rf ./node_modules ./**/node_modules ./**/**/node_modules ./**/build",
     "compile:contracts": "yarn workspace token-bridge-contracts run compile",
     "install:deploy": "cd contracts/deploy && npm install --unsafe-perm --silent",
-    "postinstall": "ln -sf $(pwd)/node_modules/openzeppelin-solidity/ contracts/node_modules/openzeppelin-solidity"
+    "post": "ln -sf $(pwd)/node_modules/openzeppelin-solidity/ contracts/node_modules/openzeppelin-solidity"
   },
   "engines": {
     "node": "10.16.3"
