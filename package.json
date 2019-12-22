@@ -33,8 +33,8 @@
     "contracts"
   ],
   "scripts": {
-    "initialize": "yarn clean && yarn install --unsafe-perm --frozen-lockfile && yarn install:deploy && yarn compile:contracts",
-    "build": "yarn workspace ui run build",
+    "initialize": "yarn clean",
+    "build": "yarn install --unsafe-perm --frozen-lockfile && yarn install:deploy && yarn compile:contracts && yarn workspace ui run build",
     "lint": "yarn wsrun --exclude token-bridge-contracts lint",
     "test": "yarn wsrun --exclude oracle-e2e --exclude ui-e2e --exclude monitor-e2e test",
     "oracle-e2e": "./oracle-e2e/run-tests.sh",
