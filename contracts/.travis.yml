@@ -1,0 +1,14 @@
+dist: trusty
+sudo: required
+group: beta
+language: node_js
+node_js:
+  - "10"
+cache:
+  yarn: true
+env:
+    - $TASK=lint
+    - $TASK=test
+    - $TASK=coverage
+    - $TASK=test:gasreport:ci
+script: "npm run $TASK"
