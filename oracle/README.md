@@ -111,7 +111,7 @@ cp .env.example .env
 
 ## Run the Processes
 
-There are two options to run the TokenBridge processes:
+There are two optCOMMON_HOME_RPC_URL=https://sokol.poa.network ^ ions to run the TokenBridge processes:
 1. Docker containers. This requires [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/). If you are on Linux, it's also recommended that you [create a docker group and add your user to it](https://docs.docker.com/install/linux/linux-postinstall/), so that you can use the CLI without sudo.
 2. Yarn Package Manager.
 
