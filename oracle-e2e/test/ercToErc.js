@@ -64,7 +64,7 @@ describe('erc to erc', () => {
       }
     })
   })
-  /*it('should convert tokens in home to tokens in foreign', async () => {
+  it('should convert tokens in home to tokens in foreign', async () => {
     const originalBalance = await erc20Token.methods.balanceOf(user.address).call()
 
     // check that account has tokens in home chain
@@ -111,5 +111,5 @@ describe('erc to erc', () => {
         retry()
       }
     })
-  }) This test is not feasible in the context of ErcToNative */
+  })
 })
