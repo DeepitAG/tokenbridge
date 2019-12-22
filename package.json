@@ -43,5 +43,8 @@
     "compile:contracts": "yarn workspace token-bridge-contracts run compile",
     "install:deploy": "cd contracts/deploy && npm install --unsafe-perm --silent",
     "postinstall": "ln -sf $(pwd)/node_modules/openzeppelin-solidity/ contracts/node_modules/openzeppelin-solidity"
+  },
+  "engines": {
+    "node": "10.16.3"
   }
 }
