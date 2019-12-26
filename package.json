@@ -45,6 +45,6 @@
     "post": "ln -sf $(pwd)/node_modules/openzeppelin-solidity/ contracts/node_modules/openzeppelin-solidity"
   },
   "engines": {
-    "node": "10.16.3"
+    "node": ">=8.16.2"
   }
 }

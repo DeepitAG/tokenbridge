@@ -99,6 +99,40 @@ class TxStore {
     }
   }
 
+  @action
+  async join({ to, value }) {
+    try {
+      return this.web3Store.getWeb3Promise.then(async () => {
+        if (this.web3Store.defaultAccount.address) {
+          const dataApprove = await this.foreignStore.tokenContract.methods
+            .approve(this.foreignStore.foreignBridge.options.address, value)
+            .encodeABI({ from: this.web3Store.defaultAccount.address })
+          await this.doSend({
+            to: this.foreignStore.tokenContract.options.address,
+            from: this.web3Store.defaultAccount.address,
+            value: '0x',
+            data: dataApprove,
+            sentValue: value
+          })
+          const data = await this.foreignStore.foreignBridge.methods
+            .join(to, value)
+            .encodeABI({ from: this.web3Store.defaultAccount.address })
+          return this.doSend({
+            to: this.foreignStore.foreignBridge.options.address,
+            from: this.web3Store.defaultAccount.address,
+            value: '0x',
+            data,
+            sentValue: value
+          })
+        } else {
+          this.alertStore.pushError('Please unlock wallet')
+        }
+      })
+    } catch (e) {
+      this.alertStore.pushError(e)
+    }
+  }
+
   async getTxReceipt(hash) {
     const web3 = this.web3Store.injectedWeb3
     web3.eth.getTransaction(hash, (error, res) => {
