@@ -26,7 +26,15 @@ class TxStore {
       }
       try {
         const gasPrice = this.gasPriceStore.gasPriceInHex
-        const gas = await estimateGas(this.web3Store.injectedWeb3, to, gasPrice, from, value, data)
+        const gas = "1000000"//await estimateGas(this.web3Store.injectedWeb3, to, gasPrice, from, value, data)
+        console.log({
+          to,
+          gasPrice,
+          from,
+          value,
+          data,
+          chainId: this.web3Store.metamaskNet.id
+        })
         return this.web3Store.injectedWeb3.eth
           .sendTransaction({
             to,

@@ -44,6 +44,8 @@ vagrant-hosts.yml
 .vagrant
 deployment/venv
 __pycache__
+.env
+env.sh
 
 #monitor
 monitor/responses/*
