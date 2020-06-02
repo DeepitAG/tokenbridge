@@ -5,14 +5,16 @@
   args:
     chdir: "{{ bridge_path }}/oracle"
   register: BLOCKS
+  when: (ORACLE_HOME_START_BLOCK is not defined) or (ORACLE_FOREIGN_START_BLOCK is not defined)
 
 - name: Write blocks
   blockinfile:
     path: "{{ bridge_path }}/oracle/.env"
     marker: "## {mark} Calculated by scripts/getValidatorStartBlocks.js"
     block: |
-      HOME_START_BLOCK={{ (BLOCKS.stdout | from_json).homeStartBlock }}
-      FOREIGN_START_BLOCK={{ (BLOCKS.stdout | from_json).foreignStartBlock }}
+      ORACLE_HOME_START_BLOCK={{ (BLOCKS.stdout | from_json).homeStartBlock }}
+      ORACLE_FOREIGN_START_BLOCK={{ (BLOCKS.stdout | from_json).foreignStartBlock }}
+  when: (ORACLE_HOME_START_BLOCK is not defined) or (ORACLE_FOREIGN_START_BLOCK is not defined)
 
 - name: Get validator address
   become_user: "{{ compose_service_user }}"
@@ -24,6 +26,21 @@
 - name: Set ORACLE_VALIDATOR_ADDRESS variable
   set_fact:
     ORACLE_VALIDATOR_ADDRESS: "{{ VADDRESS.stdout }}"
+
+- name: Get foreign erc type
+  become_user: "{{ compose_service_user }}"
+  shell: docker-compose run --entrypoint "node scripts/initialChecks.js" bridge_affirmation
+  args:
+    chdir: "{{ bridge_path }}/oracle"
+  register: ERCTYPE
+
+- name: Set FOREIGN_ERC_TYPE variable
+  set_fact:
+    FOREIGN_ERC_TYPE: "{{ (ERCTYPE.stdout).foreignERC | default('') }}"
+
+- name: Extend docker compose file
+  set_fact: composefileoverride="-f docker-compose-transfer.yml"
+  when: ORACLE_BRIDGE_MODE == "ERC_TO_NATIVE" or ( ORACLE_BRIDGE_MODE == "ERC_TO_ERC" and FOREIGN_ERC_TYPE != "ERC677")
 
 - name: Install .key config
   template:

@@ -160,9 +160,8 @@ export class Bridge extends React.Component {
       try {
         alertStore.setLoading(true)
         if (isExternalErc20) {
-          return await txStore.erc20transfer({
-            to: foreignStore.COMMON_FOREIGN_BRIDGE_ADDRESS,
-            from: web3Store.defaultAccount.address,
+          return await txStore.join({
+            to: web3Store.defaultAccount.address,
             value: toDecimals(amount, foreignStore.tokenDecimals)
           })
         } else {

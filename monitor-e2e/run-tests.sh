@@ -2,7 +2,7 @@ cd $(dirname $0)
 
 ../e2e-commons/up.sh deploy monitor
 
-./wait-for-monitor.sh
+bash wait-for-monitor.sh
 nohup ./periodically-check-all.sh < /dev/null > /dev/null 2>&1 &
 checkPID=$!
 

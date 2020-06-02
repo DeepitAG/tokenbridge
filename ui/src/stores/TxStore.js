@@ -26,7 +26,15 @@ class TxStore {
       }
       try {
         const gasPrice = this.gasPriceStore.gasPriceInHex
-        const gas = await estimateGas(this.web3Store.injectedWeb3, to, gasPrice, from, value, data)
+        const gas = "1000000"//await estimateGas(this.web3Store.injectedWeb3, to, gasPrice, from, value, data)
+        console.log({
+          to,
+          gasPrice,
+          from,
+          value,
+          data,
+          chainId: this.web3Store.metamaskNet.id
+        })
         return this.web3Store.injectedWeb3.eth
           .sendTransaction({
             to,
@@ -64,7 +72,7 @@ class TxStore {
     try {
       return this.web3Store.getWeb3Promise.then(async () => {
         if (this.web3Store.defaultAccount.address) {
-          const data = await contract.methods.transferAndCall(to, value, '0x00').encodeABI()
+          const data = await contract.methods.transferAndCall(to, value, '0x').encodeABI()
           return this.doSend({ to: tokenAddress, from, value: '0x00', data, sentValue: value })
         } else {
           this.alertStore.pushError('Please unlock wallet')
@@ -86,6 +94,40 @@ class TxStore {
           return this.doSend({
             to: this.foreignStore.tokenAddress,
             from,
+            value: '0x',
+            data,
+            sentValue: value
+          })
+        } else {
+          this.alertStore.pushError('Please unlock wallet')
+        }
+      })
+    } catch (e) {
+      this.alertStore.pushError(e)
+    }
+  }
+
+  @action
+  async join({ to, value }) {
+    try {
+      return this.web3Store.getWeb3Promise.then(async () => {
+        if (this.web3Store.defaultAccount.address) {
+          const dataApprove = await this.foreignStore.tokenContract.methods
+            .approve(this.foreignStore.foreignBridge.options.address, value)
+            .encodeABI({ from: this.web3Store.defaultAccount.address })
+          await this.doSend({
+            to: this.foreignStore.tokenContract.options.address,
+            from: this.web3Store.defaultAccount.address,
+            value: '0x',
+            data: dataApprove,
+            sentValue: value
+          })
+          const data = await this.foreignStore.foreignBridge.methods
+            .join(to, value)
+            .encodeABI({ from: this.web3Store.defaultAccount.address })
+          return this.doSend({
+            to: this.foreignStore.foreignBridge.options.address,
+            from: this.web3Store.defaultAccount.address,
             value: '0x',
             data,
             sentValue: value

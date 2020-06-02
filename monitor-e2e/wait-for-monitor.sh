@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+
 FILES=(getBalances.json validators.json eventsStats.json alerts.json)
 
 check_files_exist() {

@@ -15,6 +15,7 @@ async function estimateGas({ web3, homeBridge, validatorContract, recipient, val
     if (e instanceof HttpListProviderError) {
       throw e
     }
+    console.log(e)
 
     const messageHash = web3.utils.soliditySha3(recipient, value, txHash)
     const senderHash = web3.utils.soliditySha3(address, messageHash)
